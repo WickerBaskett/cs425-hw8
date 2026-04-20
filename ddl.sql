@@ -8,50 +8,70 @@ CREATE DATABASE IF NOT EXISTS PARKSPECIES;
 
 USE PARKSPECIES;
 
-CREATE TABLE IF NOT EXISTS ParkSpecies (
-    ParkName            VARCHAR(46) NOT NULL,
-    ScientificName 	VARCHAR(69) NOT NULL,
-    Occurence           VARCHAR(31),
-    Nativeness          VARCHAR(13),
-    Abundance           VARCHAR(10),
-    PRIMARY KEY (ParkName, ScientificName)
+DROP TABLE IF EXISTS Seasons;
+DROP TABLE IF EXISTS ConsStatus;
+DROP TABLE IF EXISTS ParkSpecies;
+DROP TABLE IF EXISTS CommonNames;
+DROP TABLE IF EXISTS SciToFam;
+DROP TABLE IF EXISTS FamToOrd;
+DROP TABLE IF EXISTS OrdToCat;
+
+CREATE TABLE IF NOT EXISTS OrdToCat (
+    Order               VARCHAR(32) NOT NULL,
+    Category        	VARCHAR(32) NOT NULL,
+    PRIMARY KEY (Order)
 );
 
-CREATE TABLE IF NOT EXISTS ConsStatus (
-    ParkName            VARCHAR(46) NOT NULL,
-    ScientificName 	VARCHAR(69) NOT NULL,
-    ConservationStatus  VARCHAR(19),
-    PRIMARY KEY (ParkName, ScientificName)
-);
-
-CREATE TABLE IF NOT EXISTS Seasons (
-    ParkName            VARCHAR(46) NOT NULL,
-    ScientificName 	VARCHAR(69) NOT NULL,
-    Seasonality         VARCHAR(10),
-    PRIMARY KEY (ParkName, ScientificName)
-);
-
-CREATE TABLE IF NOT EXISTS CommonNames (
-    CommonName          VARCHAR(60) NOT NULL,
-    ScientificName 	VARCHAR(69) NOT NULL,
-    PRIMARY KEY (CommonName)
+CREATE TABLE IF NOT EXISTS FamToOrd (
+    Family              VARCHAR(32) NOT NULL,
+    Order        	VARCHAR(32) NOT NULL,
+    PRIMARY KEY (Family)
+    FOREIGN KEY FKOrder (Order) REFERENCES OrdToCat(Order)
 );
 
 CREATE TABLE IF NOT EXISTS SciToFam (
-    ScientificName 	VARCHAR(69) NOT NULL,
-    Family              VARCHAR(20),
+    ScientificName 	VARCHAR(128) NOT NULL,
+    Family              VARCHAR(32) NOT NULL,
     PRIMARY KEY (ScientificName)
+    FOREIGN KEY FkFamily (Family) REFERENCES FamToOrd(Family)
+);
+
+CREATE TABLE IF NOT EXISTS CommonNames (
+    CommonName          VARCHAR(128) NOT NULL,
+    ScientificName 	VARCHAR(128) NOT NULL,
+    PRIMARY KEY (CommonName)
+    FOREIGN KEY FKScientificName (ScientificName) REFERENCES SciToFam(ScientificName)
+);
+
+CREATE TABLE IF NOT EXISTS ParkSpecies (
+    ParkName            VARCHAR(128) NOT NULL,
+    ScientificName 	VARCHAR(128) NOT NULL,
+    Occurence           VARCHAR(32),
+    Nativeness          VARCHAR(16),
+    Abundance           VARCHAR(16),
+    PRIMARY KEY (ParkName, ScientificName)
+    FOREIGN KEY FKScientificName (ScientificName) REFERENCES SciToFam(ScientificName)
+);
+
+CREATE TABLE IF NOT EXISTS ConsStatus (
+    ParkName            VARCHAR(128) NOT NULL,
+    ScientificName 	VARCHAR(128) NOT NULL,
+    ConservationStatus  VARCHAR(32),
+    PRIMARY KEY (ParkName, ScientificName)
+    FOREIGN KEY FKParkName (ParkName) REFERENCES ParkSpecies(ParkName)
+    FOREIGN KEY FKScientificName (ScientificName) REFERENCES ParkSpecies(ScientificName)
+);
+
+CREATE TABLE IF NOT EXISTS Seasons (
+    ParkName            VARCHAR(128) NOT NULL,
+    ScientificName 	VARCHAR(128) NOT NULL,
+    Seasonality         VARCHAR(16),
+    PRIMARY KEY (ParkName, ScientificName)
+    FOREIGN KEY FKParkName (ParkName) REFERENCES ParkSpecies(ParkName)
+    FOREIGN KEY FKScientificName (ScientificName) REFERENCES ParkSpecies(ScientificName)
 );
 
 
-CREATE TABLE IF NOT EXISTS FamToOrd (
-    Family              VARCHAR(20) NOT NULL,
-    Order        	VARCHAR(20) NOT NULL,
-    PRIMARY KEY (Family)
-);
 
-CREATE TABLE IF NOT EXISTS OrdToCat (
-    Order               VARCHAR(20) NOT NULL,
-    Category        	VARCHAR(19) NOT NULL,
-    PRIMARY KEY (Order)
-);
+
+
