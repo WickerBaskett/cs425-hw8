@@ -4,6 +4,7 @@
     2026-04-20
 */
 
+-- I use erlewandowski here since I dont have permissions to create a new database 
 CREATE DATABASE IF NOT EXISTS erlewandowski;
 
 USE erlewandowski;
@@ -24,7 +25,7 @@ CREATE TABLE IF NOT EXISTS OrdToCat (
 
 CREATE TABLE IF NOT EXISTS FamToOrd (
     Family              VARCHAR(32) NOT NULL,
-    `Order`       	VARCHAR(32) NOT NULL,
+    `Order`       	VARCHAR(32) ,
     PRIMARY KEY (Family),
     FOREIGN KEY FKOrder (`Order`) REFERENCES OrdToCat(`Order`)
 );
@@ -39,7 +40,7 @@ CREATE TABLE IF NOT EXISTS SciToFam (
 CREATE TABLE IF NOT EXISTS CommonNames (
     CommonName          VARCHAR(128) NOT NULL,
     ScientificName 	VARCHAR(128) NOT NULL,
-    PRIMARY KEY (CommonName),
+    PRIMARY KEY (CommonName, ScientificName),
     FOREIGN KEY FKScientificName (ScientificName) REFERENCES SciToFam(ScientificName)
 );
 
